@@ -1,0 +1,13 @@
+{
+  "name": "xenon-hub-bot",
+  "version": "1.0.0",
+  "description": "Xenon Hub Discord Bot",
+  "main": "api/interactions.js",
+  "scripts": {
+    "register": "node scripts/register.js"
+  },
+  "dependencies": {
+    "discord-interactions": "^3.4.0",
+    "tweetnacl": "^1.0.3"
+  }
+}
