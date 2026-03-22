@@ -77,8 +77,14 @@ const KEYLESS = {
 };
 
 const PREMIUM = {
-  "\u{1F48E} Premium": [
-    "placeholder",
+  "\u{1F48E} Premium Exclusive": [
+    "Always Downslam",
+    "Auto Aim Abilities",
+    "Hitbox Extender",
+    "Legit Black Flash Chain",
+    "Auto Farm",
+    "Invisibility",
+    "Invisibility V2",
   ],
 };
 
@@ -137,9 +143,9 @@ function handleBtn(id) {
     return ephemeral({
       embeds: [{
         title: "\u{1F48E} Premium Features",
-        description: fmt(PREMIUM) + "\n\n*+ All keyless features included*",
+        description: "**Includes everything in Keyless PLUS:**\n\n" + fmt(PREMIUM),
         color: 0xffd700,
-        footer: { text: `${count(PREMIUM)} premium features \u2022 Updated: ${PREMIUM_UPDATED}` },
+        footer: { text: `${count(PREMIUM)} premium exclusives + all keyless features \u2022 Last Updated: 22 March 2026` },
       }]
     });
   }
