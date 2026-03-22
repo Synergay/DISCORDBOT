@@ -15,7 +15,7 @@ async function updateCmd(opts, member) {
   if (!channelId) return ephemeral({ content: "UPDATE_CHANNEL_ID not set in env." });
 
   const lines = features.split(",").map(f => `* ${f.trim()}`).join("\n");
-  let msg = `<@&${roleId}> ┆Update Ping • デ\n${lines}`;
+  let msg = `<@&${roleId}>\n${lines}`;
   if (note) msg += `\n\n* ${note}`;
 
   const url = `https://discord.com/api/v10/channels/${channelId}/messages`;
