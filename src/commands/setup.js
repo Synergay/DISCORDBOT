@@ -1,6 +1,8 @@
 const { reply, ephemeral, embed } = require("../utils/respond");
 const features = require("./features");
 const credits = require("./credits");
+const { priceCmd } = require("./priceinfo");
+const { executorsCmd } = require("./executors");
 
 async function setupCmd(opts, token) {
   const channel = opts.channel;
@@ -11,6 +13,10 @@ async function setupCmd(opts, token) {
     payload = features.featuresCmd();
   } else if (fn === "credits") {
     payload = credits.creditsCmd();
+  } else if (fn === "priceinfo") {
+    payload = priceCmd();
+  } else if (fn === "executors") {
+    payload = executorsCmd();
   } else {
     return ephemeral({ content: `Unknown function: \`${fn}\`` });
   }

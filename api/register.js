@@ -50,7 +50,9 @@ const commands = [
         required: true,
         choices: [
           { name: "Features", value: "features" },
-          { name: "Credits", value: "credits" }
+          { name: "Credits", value: "credits" },
+          { name: "Price Info", value: "priceinfo" },
+          { name: "Executors", value: "executors" }
         ]
       }
     ]
