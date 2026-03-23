@@ -3,10 +3,10 @@ const store = require("../utils/store");
 const { parseSections } = require("../utils/sections");
 
 const EMOJIS = {
-  paypal: "<:paypalic:000000000000000000>",
-  seliware: "\uD83D\uDCBF",
-  booster: "<:booster:000000000000000000>",
-  nitro: "<:nitro:000000000000000000>",
+  paypal: "<:paypalic:1471187386028261447>",
+  seliware: "<:seli:1398716722432704646>",
+  booster: "<a:booster:1058907673116020857>",
+  nitro: "<:nitro:1485509139462357042>",
 };
 
 const PURCHASE_CHANNEL = "1284905385190232146";
