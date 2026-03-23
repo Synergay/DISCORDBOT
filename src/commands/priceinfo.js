@@ -13,7 +13,7 @@ const PURCHASE_CHANNEL = "1284905385190232146";
 const BANNER = "https://cdn.discordapp.com/attachments/1469870384231743528/1485301111098179707/standard_4.gif?ex=69c206b4&is=69c0b534&hm=82ee3a0373146c38e8bfee8e7cd34d2ebb8ef7553d740cd89e29759b1e3b5965&";
 
 const DEFAULT_PRICE_TEXT = `[PAYMENT METHODS]
-Paypal|\u00A34.99 / 6.80$ - 1 MONTH\n\u00A315 / 20.50$ - LIFETIME
+Paypal|\u00A34.99 / 6.80$ - 1 MONTH // \u00A315 / 20.50$ - LIFETIME
 Seliware Key|2 MONTHS [ 15$ / 11\u00A3 ] - LIFETIME
 
 [TEMPORARY METHODS]
@@ -60,7 +60,7 @@ function buildDescription(raw) {
         else if (lower.includes("nitro")) emoji = EMOJIS.nitro + " ";
         parts.push(`${emoji}**${label} -**`);
         parts.push("```");
-        parts.push(value.replace(/\\n/g, "\n"));
+        parts.push(value.replace(/\s*\/\/\s*/g, "\n"));
         parts.push("```");
       } else {
         parts.push(`\u2022 ${item}`);
