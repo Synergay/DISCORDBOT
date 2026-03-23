@@ -3,7 +3,7 @@ const { featuresCmd } = require("../commands/features");
 const { creditsCmd } = require("../commands/credits");
 const { setupCmd } = require("../commands/setup");
 const { updateCmd } = require("../commands/update");
-const { openPremModal, openKeylessModal } = require("../commands/editfeatures");
+const { openPremModal, openKeylessModal, openExecModal, openPriceModal } = require("../commands/editfeatures");
 const { ephemeral } = require("../utils/respond");
 
 function parseOpts(data) {
@@ -36,6 +36,8 @@ async function handleCmd(data, member, token) {
     case "update": return await updateCmd(opts, member);
     case "updateprem": return await openPremModal(member);
     case "updatekeyless": return await openKeylessModal(member);
+    case "updateexecutors": return await openExecModal(member);
+    case "updateprices": return await openPriceModal(member);
     default: return ephemeral({ content: "unknown command" });
   }
 }

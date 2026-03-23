@@ -14,9 +14,9 @@ async function setupCmd(opts, token) {
   } else if (fn === "credits") {
     payload = credits.creditsCmd();
   } else if (fn === "priceinfo") {
-    payload = priceCmd();
+    payload = await priceCmd();
   } else if (fn === "executors") {
-    payload = executorsCmd();
+    payload = await executorsCmd();
   } else {
     return ephemeral({ content: `Unknown function: \`${fn}\`` });
   }

@@ -1,6 +1,8 @@
 const { ephemeral } = require("../utils/respond");
 const store = require("../utils/store");
-const { getKeyless, getPremium, CAT_KEYS, DEFAULT_KEYLESS, DEFAULT_PREMIUM } = require("./features");
+const { getKeyless, getPremium, CAT_KEYS } = require("./features");
+const { getData: getExecData } = require("./executors");
+const { getData: getPriceData } = require("./priceinfo");
 
 function hasEditRole(member) {
   const allowed = (process.env.EDITOR_ROLE_IDS || "").split(",").map(r => r.trim()).filter(Boolean);
@@ -15,9 +17,12 @@ function today() {
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-async function openPremModal(member) {
-  if (!hasEditRole(member)) return ephemeral({ content: "you don't have permission to edit features." });
+function noPerms() {
+  return ephemeral({ content: "you don't have permission to edit this." });
+}
 
+async function openPremModal(member) {
+  if (!hasEditRole(member)) return noPerms();
   const prem = await getPremium();
   return {
     type: 9,
@@ -41,8 +46,7 @@ async function openPremModal(member) {
 }
 
 async function openKeylessModal(member) {
-  if (!hasEditRole(member)) return ephemeral({ content: "you don't have permission to edit features." });
-
+  if (!hasEditRole(member)) return noPerms();
   const kl = await getKeyless();
   const labels = Object.keys(kl);
   const components = CAT_KEYS.map((cat, i) => {
@@ -61,7 +65,6 @@ async function openKeylessModal(member) {
       }]
     };
   });
-
   return {
     type: 9,
     data: {
@@ -70,6 +73,138 @@ async function openKeylessModal(member) {
       components,
     }
   };
+}
+
+async function openExecModal(member) {
+  if (!hasEditRole(member)) return noPerms();
+  const data = await getExecData();
+  return {
+    type: 9,
+    data: {
+      custom_id: "modal_editexec",
+      title: "Edit Executors",
+      components: [
+        {
+          type: 1,
+          components: [{
+            type: 4,
+            custom_id: "exec_pc_paid",
+            label: "PC - Paid (one per line)",
+            style: 2,
+            value: data.pc_paid.join("\n"),
+            required: true,
+            max_length: 4000,
+          }]
+        },
+        {
+          type: 1,
+          components: [{
+            type: 4,
+            custom_id: "exec_pc_free",
+            label: "PC - Free (one per line)",
+            style: 2,
+            value: data.pc_free.join("\n"),
+            required: true,
+            max_length: 4000,
+          }]
+        },
+        {
+          type: 1,
+          components: [{
+            type: 4,
+            custom_id: "exec_mobile",
+            label: "Mobile (one per line)",
+            style: 2,
+            value: data.mobile.join("\n"),
+            required: true,
+            max_length: 4000,
+          }]
+        },
+      ]
+    }
+  };
+}
+
+async function openPriceModal(member) {
+  if (!hasEditRole(member)) return noPerms();
+  const data = await getPriceData();
+  return {
+    type: 9,
+    data: {
+      custom_id: "modal_editprice",
+      title: "Edit Price Info",
+      components: [
+        {
+          type: 1,
+          components: [{
+            type: 4,
+            custom_id: "price_paypal",
+            label: "Paypal pricing",
+            style: 2,
+            value: data.paypal,
+            required: true,
+            max_length: 1000,
+          }]
+        },
+        {
+          type: 1,
+          components: [{
+            type: 4,
+            custom_id: "price_seliware",
+            label: "Seliware key pricing",
+            style: 2,
+            value: data.seliware,
+            required: true,
+            max_length: 1000,
+          }]
+        },
+        {
+          type: 1,
+          components: [{
+            type: 4,
+            custom_id: "price_boosts",
+            label: "Server boosts status",
+            style: 1,
+            value: data.boosts,
+            required: true,
+            max_length: 500,
+          }]
+        },
+        {
+          type: 1,
+          components: [{
+            type: 4,
+            custom_id: "price_nitro",
+            label: "Nitro status",
+            style: 1,
+            value: data.nitro,
+            required: true,
+            max_length: 500,
+          }]
+        },
+        {
+          type: 1,
+          components: [{
+            type: 4,
+            custom_id: "price_notes",
+            label: "Notes",
+            style: 2,
+            value: data.notes,
+            required: true,
+            max_length: 1000,
+          }]
+        },
+      ]
+    }
+  };
+}
+
+function getField(data, id) {
+  for (const row of data.components) {
+    const input = row.components[0];
+    if (input.custom_id === id) return input.value;
+  }
+  return "";
 }
 
 async function handleModalSubmit(data) {
@@ -110,7 +245,44 @@ async function handleModalSubmit(data) {
     });
   }
 
+  if (id === "modal_editexec") {
+    const parse = (fid) => getField(data, fid).split("\n").map(f => f.trim()).filter(Boolean);
+    const exec = {
+      pc_paid: parse("exec_pc_paid"),
+      pc_free: parse("exec_pc_free"),
+      mobile: parse("exec_mobile"),
+    };
+    await store.set("executors", JSON.stringify(exec));
+    await store.set("executors:updated", today());
+    const total = exec.pc_paid.length + exec.pc_free.length + exec.mobile.length;
+    return ephemeral({
+      embeds: [{
+        title: "\u2705 Executors Updated",
+        description: `**${total}** executors saved.\n\nPC Paid: ${exec.pc_paid.length}\nPC Free: ${exec.pc_free.length}\nMobile: ${exec.mobile.length}`,
+        color: 0x57f287,
+      }]
+    });
+  }
+
+  if (id === "modal_editprice") {
+    const prices = {
+      paypal: getField(data, "price_paypal"),
+      seliware: getField(data, "price_seliware"),
+      boosts: getField(data, "price_boosts"),
+      nitro: getField(data, "price_nitro"),
+      notes: getField(data, "price_notes"),
+    };
+    await store.set("priceinfo", JSON.stringify(prices));
+    return ephemeral({
+      embeds: [{
+        title: "\u2705 Price Info Updated",
+        description: "all pricing fields have been saved.",
+        color: 0xffd700,
+      }]
+    });
+  }
+
   return null;
 }
 
-module.exports = { openPremModal, openKeylessModal, handleModalSubmit, hasEditRole };
+module.exports = { openPremModal, openKeylessModal, openExecModal, openPriceModal, handleModalSubmit, hasEditRole };
