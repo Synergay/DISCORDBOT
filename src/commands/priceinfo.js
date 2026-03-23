@@ -1,5 +1,6 @@
 const { reply } = require("../utils/respond");
 const store = require("../utils/store");
+const { parseSections } = require("../utils/sections");
 
 const EMOJIS = {
   paypal: "<:paypalic:000000000000000000>",
@@ -11,51 +12,75 @@ const EMOJIS = {
 const PURCHASE_CHANNEL = "1284905385190232146";
 const BANNER = "https://cdn.discordapp.com/attachments/1469870384231743528/1485301111098179707/standard_4.gif?ex=69c206b4&is=69c0b534&hm=82ee3a0373146c38e8bfee8e7cd34d2ebb8ef7553d740cd89e29759b1e3b5965&";
 
-const DEFAULT_PRICES = {
-  paypal: "\u00A34.99 / 6.80$ - 1 MONTH\n\u00A315 / 20.50$ - LIFETIME",
-  seliware: "2 MONTHS [ 15$ / 11\u00A3 ] - LIFETIME",
-  boosts: "NOT ACCEPTED RIGHT NOW!",
-  nitro: "ONLY WHEN XENON DOESN'T HAVE NITRO - 1 MONTH",
-  notes: "MAKE A TICKET IF YOU WANT TO BE A RESELLER",
-};
+const DEFAULT_PRICE_TEXT = `[PAYMENT METHODS]
+Paypal|\u00A34.99 / 6.80$ - 1 MONTH\n\u00A315 / 20.50$ - LIFETIME
+Seliware Key|2 MONTHS [ 15$ / 11\u00A3 ] - LIFETIME
 
-async function getData() {
-  const saved = await store.get("priceinfo");
-  if (saved) return typeof saved === "string" ? JSON.parse(saved) : saved;
-  return DEFAULT_PRICES;
+[TEMPORARY METHODS]
+Server Boosts|NOT ACCEPTED RIGHT NOW!
+Nitro (Not Basic)|ONLY WHEN XENON DOESN'T HAVE NITRO - 1 MONTH
+
+[NOTES]
+MAKE A TICKET IF YOU WANT TO BE A RESELLER`;
+
+async function getPriceText() {
+  return await store.get("priceinfo:raw") || DEFAULT_PRICE_TEXT;
+}
+
+function buildDescription(raw) {
+  const sections = parseSections(raw);
+  const parts = [];
+
+  for (const [section, items] of Object.entries(sections)) {
+    if (section === "NOTES") {
+      parts.push("\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500");
+      parts.push("**NOTES**");
+      for (const item of items) {
+        parts.push(`\u2022 ${item}`);
+      }
+      continue;
+    }
+
+    if (section.includes("TEMPORARY")) {
+      parts.push("***__TEMPORARY METHODS__***\n");
+    } else {
+      parts.push(`***${section}***\n`);
+    }
+
+    for (const item of items) {
+      const pipeIdx = item.indexOf("|");
+      if (pipeIdx > -1) {
+        const label = item.slice(0, pipeIdx).trim();
+        const value = item.slice(pipeIdx + 1).trim();
+        let emoji = "";
+        const lower = label.toLowerCase();
+        if (lower.includes("paypal")) emoji = EMOJIS.paypal + " ";
+        else if (lower.includes("seliware")) emoji = EMOJIS.seliware + " ";
+        else if (lower.includes("boost")) emoji = EMOJIS.booster + " ";
+        else if (lower.includes("nitro")) emoji = EMOJIS.nitro + " ";
+        parts.push(`${emoji}**${label} -**`);
+        parts.push("```");
+        parts.push(value.replace(/\\n/g, "\n"));
+        parts.push("```");
+      } else {
+        parts.push(`\u2022 ${item}`);
+      }
+    }
+    parts.push("");
+  }
+
+  return parts.join("\n").trim();
 }
 
 async function priceCmd() {
-  const data = await getData();
+  const raw = await getPriceText();
   const guildId = process.env.GUILD_ID || "0";
 
   return reply({
     embeds: [{
       title: "Premium Script prices \uD83C\uDF8B",
       color: 0x2b2d31,
-      description: [
-        "***Current payment methods***\n",
-        `${EMOJIS.paypal} **Paypal -**`,
-        "```",
-        data.paypal,
-        "```\n",
-        `${EMOJIS.seliware} **2 MONTH SELIWARE KEY**`,
-        "```",
-        data.seliware,
-        "```\n",
-        "***__TEMPORARY METHODS__***\n",
-        `${EMOJIS.booster} **SERVER BOOSTS**`,
-        "```",
-        data.boosts,
-        "```\n",
-        `${EMOJIS.nitro} **NITRO (NOT BASIC)**`,
-        "```",
-        data.nitro,
-        "```\n",
-        "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
-        "**NOTES**",
-        `\u2022 ${data.notes}`,
-      ].join("\n"),
+      description: buildDescription(raw),
       image: { url: BANNER },
     }],
     components: [{
@@ -71,4 +96,4 @@ async function priceCmd() {
   });
 }
 
-module.exports = { priceCmd, getData, DEFAULT_PRICES };
+module.exports = { priceCmd, getPriceText, DEFAULT_PRICE_TEXT };
