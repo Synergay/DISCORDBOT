@@ -5,7 +5,7 @@ const { parseSections } = require("../utils/sections");
 const EMOJIS = {
   paypal: "<:paypalic:1471187386028261447>",
   seliware: "<:seli:1398716722432704646>",
-  booster: "<a:booster:1058907673116020857>",
+  booster: "<:booster:1058907673116020857>",
   nitro: "<:nitro:1485509139462357042>",
 };
 
