@@ -2,6 +2,7 @@ const { InteractionType, InteractionResponseType } = require("discord-interactio
 const { verify } = require("../src/utils/verify");
 const { handleCmd } = require("../src/handlers/commands");
 const { handleComponent } = require("../src/handlers/components");
+const { handleModalSubmit } = require("../src/commands/editfeatures");
 
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).send("method not allowed");
@@ -29,8 +30,13 @@ module.exports = async function handler(req, res) {
   }
 
   if (body.type === InteractionType.MESSAGE_COMPONENT) {
-    const result = handleComponent(body.data);
+    const result = await handleComponent(body.data);
     return res.json(result);
+  }
+
+  if (body.type === 5) {
+    const result = await handleModalSubmit(body.data);
+    if (result) return res.json(result);
   }
 
   return res.status(400).send("unknown interaction type");

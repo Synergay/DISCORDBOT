@@ -62,7 +62,15 @@ const commands = [
       { name: "features", description: "Comma separated list of changes", type: 3, required: true },
       { name: "note", description: "Extra note at the bottom", type: 3, required: false }
     ]
-  }
+  },
+  {
+    name: "updateprem",
+    description: "Edit premium features list",
+  },
+  {
+    name: "updatekeyless",
+    description: "Edit keyless features list",
+  },
 ];
 
 module.exports = async function handler(req, res) {
