@@ -25,7 +25,8 @@ module.exports = async function handler(req, res) {
   }
 
   if (body.type === InteractionType.APPLICATION_COMMAND) {
-    const result = await handleCmd(body.data, body.member || { user: body.user }, body.token);
+    const channelId = body.channel_id || body.channel?.id;
+    const result = await handleCmd(body.data, body.member || { user: body.user }, body.token, channelId);
     return res.json(result);
   }
 

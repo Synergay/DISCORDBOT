@@ -65,10 +65,22 @@ const commands = [
       { name: "note", description: "Extra note at the bottom", type: 3, required: false }
     ]
   },
+  {
+    name: "copy",
+    description: "Copy a message (embed + buttons) to another channel",
+    default_member_permissions: "8",
+    options: [
+      { name: "message_id", description: "Message ID to copy", type: 3, required: true },
+      { name: "source", description: "Source channel (defaults to current)", type: 7, required: false },
+      { name: "target", description: "Target channel (defaults to current)", type: 7, required: false }
+    ]
+  },
   { name: "updateprem", description: "Edit premium features list" },
   { name: "updatekeyless", description: "Edit keyless features list" },
-  { name: "updateexecutors", description: "Edit supported executors list" },
-  { name: "updateprices", description: "Edit premium pricing info" },
+  { name: "updateexecpc", description: "Edit PC executors (live message)" },
+  { name: "updateexecmobile", description: "Edit mobile executors (live message)" },
+  { name: "updateexecutors", description: "Edit all executors (section format)" },
+  { name: "updateprices", description: "Edit premium pricing (live message)" },
 ];
 
 module.exports = async function handler(req, res) {
