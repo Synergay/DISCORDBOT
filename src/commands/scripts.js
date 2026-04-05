@@ -13,49 +13,35 @@ const SCRIPTS = {
 
 function scriptsCmd() {
   return reply({
-    content: "### \uD83D\uDCDC Script Selection\nSelect a game below. Mobile users: Long-press the code to copy.",
-    components: [
-      {
-        type: 1,
-        components: [
-          { type: 2, style: 2, label: "Bite by Night", custom_id: "sc_bite" },
-          { type: 2, style: 2, label: "Draw and Donate", custom_id: "sc_draw_donate" },
-          { type: 2, style: 2, label: "Draw Me", custom_id: "sc_draw_me" },
-          { type: 2, style: 2, label: "Speed Draw", custom_id: "sc_speed" },
-          { type: 2, style: 2, label: "Starving Artists", custom_id: "sc_starving1" },
+    content: "\uD83D\uDCDC **Script Selection**\nSelect a game below.\nMobile: tap and hold the result to copy.",
+    components: [{
+      type: 1,
+      components: [{
+        type: 3,
+        custom_id: "script_select",
+        placeholder: "Select a game...",
+        options: [
+          { label: "Bite by Night", value: "sc_bite" },
+          { label: "Draw & Donate", value: "sc_draw_donate" },
+          { label: "Draw Me", value: "sc_draw_me" },
+          { label: "Speed Draw", value: "sc_speed" },
+          { label: "Starving Artists", value: "sc_starving1" },
+          { label: "Starving Artists 2", value: "sc_starving2" },
+          { label: "Jujutsu Shenanigans (Free)", value: "jj_free" },
+          { label: "Jujutsu Shenanigans (Key)", value: "jj_key" },
         ]
-      },
-      {
-        type: 1,
-        components: [
-          { type: 2, style: 2, label: "Starving Artists 2", custom_id: "sc_starving2" },
-          { type: 2, style: 1, label: "Jujutsu Shenanigans", custom_id: "sc_jujutsu" },
-        ]
-      }
-    ]
+      }]
+    }]
   });
 }
 
-function handleBtn(id) {
-  if (id === "sc_jujutsu") {
-    return ephemeral({
-      content: "Select version for **Jujutsu Shenanigans**:",
-      components: [{
-        type: 1,
-        components: [
-          { type: 2, style: 3, label: "Free", custom_id: "jj_free" },
-          { type: 2, style: 4, label: "Key System", custom_id: "jj_key" },
-        ]
-      }]
-    });
-  }
-
-  const code = SCRIPTS[id];
+function handleSelect(values) {
+  const selected = values[0];
+  const code = SCRIPTS[selected];
   if (code) {
-    return ephemeral({ content: `\`\`\`lua\n${code}\n\`\`\`` });
+    return ephemeral({ content: "Tap and hold to copy:\n\n\u200B" + code });
   }
-
   return null;
 }
 
-module.exports = { scriptsCmd, handleBtn, SCRIPTS };
+module.exports = { scriptsCmd, handleSelect };
