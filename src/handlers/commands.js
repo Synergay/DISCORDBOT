@@ -7,8 +7,7 @@ const { copyCmd } = require("../commands/copy");
 const { scriptsCmd } = require("../commands/scripts");
 const { execListCmd, updateExecTimestamp } = require("../commands/execlist");
 const {
-  openPremModal, openKeylessModal, openExecModal,
-  openExecFullModal, openPriceModal
+  openKeylessModal, openPriceModal
 } = require("../commands/editfeatures");
 const { ephemeral } = require("../utils/respond");
 
@@ -45,11 +44,7 @@ async function handleCmd(data, member, token, channelId) {
     case "scripts": return scriptsCmd();
     case "executors": return execListCmd();
     case "update-executor": return await updateExecTimestamp(opts);
-    case "updateprem": return await openPremModal(member);
     case "updatekeyless": return await openKeylessModal(member);
-    case "updateexecpc": return await openExecModal(member, 0);
-    case "updateexecmobile": return await openExecModal(member, 1);
-    case "updateexecutors": return await openExecFullModal(member);
     case "updateprices": return await openPriceModal(member);
     default: return ephemeral({ content: "unknown command" });
   }
