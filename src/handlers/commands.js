@@ -4,6 +4,8 @@ const { creditsCmd } = require("../commands/credits");
 const { setupCmd } = require("../commands/setup");
 const { updateCmd } = require("../commands/update");
 const { copyCmd } = require("../commands/copy");
+const { scriptsCmd } = require("../commands/scripts");
+const { execListCmd, updateExecTimestamp } = require("../commands/execlist");
 const {
   openPremModal, openKeylessModal, openExecModal,
   openExecFullModal, openPriceModal
@@ -40,6 +42,9 @@ async function handleCmd(data, member, token, channelId) {
     case "setup": return await setupCmd(opts, token);
     case "update": return await updateCmd(opts, member);
     case "copy": return await copyCmd(opts, member);
+    case "scripts": return scriptsCmd();
+    case "executors": return execListCmd();
+    case "update-executor": return await updateExecTimestamp();
     case "updateprem": return await openPremModal(member);
     case "updatekeyless": return await openKeylessModal(member);
     case "updateexecpc": return await openExecModal(member, 0);

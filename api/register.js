@@ -37,6 +37,30 @@ const commands = [
   },
   { name: "features", description: "View Xenon Hub features" },
   { name: "credits", description: "View bot credits" },
+  { name: "scripts", description: "Open the script selection panel" },
+  { name: "executors", description: "View the executor list" },
+  {
+    name: "update-executor",
+    description: "Update the timestamp for executors",
+    options: [
+      {
+        name: "platform", description: "Platform", type: 3, required: true,
+        choices: [
+          { name: "PC", value: "pc" },
+          { name: "Mobile", value: "mobile" }
+        ]
+      },
+      {
+        name: "type", description: "Executor type", type: 3, required: true,
+        choices: [
+          { name: "Free (PC)", value: "free" },
+          { name: "Paid (PC)", value: "paid" },
+          { name: "Android (Mobile)", value: "android" },
+          { name: "iOS (Mobile)", value: "ios" }
+        ]
+      }
+    ]
+  },
   {
     name: "setup",
     description: "Setup a panel in a channel",
