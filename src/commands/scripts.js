@@ -13,7 +13,7 @@ const SCRIPTS = {
 
 function scriptsCmd() {
   return reply({
-    content: "\uD83D\uDCDC **Script Selection**\nSelect a game below.\nMobile: tap and hold the result to copy.",
+    content: "\uD83D\uDCDC **Script Selection**\nSelect a game below.",
     components: [{
       type: 1,
       components: [{
@@ -39,7 +39,7 @@ function handleSelect(values) {
   const selected = values[0];
   const code = SCRIPTS[selected];
   if (code) {
-    return ephemeral({ content: "Tap and hold to copy:\n\n\u200B" + code });
+    return ephemeral({ content: code });
   }
   return null;
 }
