@@ -44,7 +44,7 @@ async function handleCmd(data, member, token, channelId) {
     case "copy": return await copyCmd(opts, member);
     case "scripts": return scriptsCmd();
     case "executors": return execListCmd();
-    case "update-executor": return await updateExecTimestamp();
+    case "update-executor": return await updateExecTimestamp(opts);
     case "updateprem": return await openPremModal(member);
     case "updatekeyless": return await openKeylessModal(member);
     case "updateexecpc": return await openExecModal(member, 0);

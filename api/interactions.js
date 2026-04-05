@@ -3,6 +3,7 @@ const { verify } = require("../src/utils/verify");
 const { handleCmd } = require("../src/handlers/commands");
 const { handleComponent } = require("../src/handlers/components");
 const { handleModalSubmit } = require("../src/commands/editfeatures");
+const { storePanel } = require("../src/commands/execlist");
 
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).send("method not allowed");
@@ -27,7 +28,21 @@ module.exports = async function handler(req, res) {
   if (body.type === InteractionType.APPLICATION_COMMAND) {
     const channelId = body.channel_id || body.channel?.id;
     const result = await handleCmd(body.data, body.member || { user: body.user }, body.token, channelId);
-    return res.json(result);
+    res.json(result);
+
+    // capture panel message ID for /executors
+    if (body.data.name === "executors" && channelId) {
+      try {
+        const appId = process.env.DISCORD_APP_ID;
+        const token = body.token;
+        const msgRes = await fetch(`https://discord.com/api/v10/webhooks/${appId}/${token}/messages/@original`);
+        if (msgRes.ok) {
+          const msg = await msgRes.json();
+          await storePanel(channelId, msg.id);
+        }
+      } catch {}
+    }
+    return;
   }
 
   if (body.type === InteractionType.MESSAGE_COMPONENT) {
