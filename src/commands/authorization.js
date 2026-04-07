@@ -1,7 +1,7 @@
 const { ephemeral } = require("../utils/respond");
 const store = require("../utils/store");
 
-const OWNER_ID = "1051444466235486298";
+const OWNER_ID = "282997545620209665";
 
 const UPDATE_TYPES = {
   upd_executor: "Update Executor",
