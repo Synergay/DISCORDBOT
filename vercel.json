@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/interactions.js", "use": "@vercel/node" },
+    { "src": "api/register.js", "use": "@vercel/node" },
+    { "src": "api/cron.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/interactions", "dest": "/api/interactions.js" },
+    { "src": "/api/register", "dest": "/api/register.js" },
+    { "src": "/api/cron", "dest": "/api/cron.js" }
+  ]
+}
