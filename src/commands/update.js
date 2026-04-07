@@ -1,4 +1,4 @@
-const { reply, ephemeral, embed } = require("../utils/respond");
+const { ephemeral, embed } = require("../utils/respond");
 
 const DEV_ID = "282997545620209665";
 
@@ -15,16 +15,8 @@ async function updateCmd(opts, member) {
   if (!channelId) return ephemeral({ content: "UPDATE_CHANNEL_ID not set in env." });
 
   const lines = features.split(",").map(f => `* ${f.trim()}`).join("\n");
-  const now = new Date();
-  const ts = `<t:${Math.floor(now.getTime() / 1000)}:f>`;
-
-  const embedData = {
-    title: "Xenon Hub Update",
-    description: lines + (note ? `\n\n* ${note}` : ""),
-    color: 0x5865f2,
-    footer: { text: `Xenon Hub \u2022 Update` },
-    timestamp: now.toISOString(),
-  };
+  let msg = `<@&${roleId}>\n${lines}`;
+  if (note) msg += `\n\n* ${note}`;
 
   const url = `https://discord.com/api/v10/channels/${channelId}/messages`;
   const res = await fetch(url, {
@@ -34,9 +26,8 @@ async function updateCmd(opts, member) {
       Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`
     },
     body: JSON.stringify({
-      content: roleId ? `<@&${roleId}>` : "",
-      embeds: [embedData],
-      allowed_mentions: { roles: roleId ? [roleId] : [] }
+      content: msg,
+      allowed_mentions: { roles: [roleId] }
     })
   });
 

@@ -1,4 +1,4 @@
-const { reply, ephemeral, embed } = require("../utils/respond");
+const { ephemeral, embed } = require("../utils/respond");
 const features = require("./features");
 const credits = require("./credits");
 const { priceCmd } = require("./priceinfo");

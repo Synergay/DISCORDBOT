@@ -27,10 +27,10 @@ module.exports = async function handler(req, res) {
 
   if (body.type === InteractionType.APPLICATION_COMMAND) {
     const channelId = body.channel_id || body.channel?.id;
-    const result = await handleCmd(body.data, body.member || { user: body.user }, body.token, channelId);
+    const guildId = body.guild_id;
+    const result = await handleCmd(body.data, body.member || { user: body.user }, body.token, channelId, guildId);
     res.json(result);
 
-    // capture panel message ID for /executors
     if (body.data.name === "executors" && channelId) {
       try {
         const appId = process.env.DISCORD_APP_ID;

@@ -62,6 +62,35 @@ const commands = [
     ]
   },
   {
+    name: "messages",
+    description: "View tracked message count for a user",
+    options: [{ name: "user", description: "User to check (defaults to you)", type: 6, required: false }]
+  },
+  {
+    name: "messageadd",
+    description: "Add to a user's message count",
+    default_member_permissions: "8192",
+    options: [
+      { name: "user", description: "Target user", type: 6, required: true },
+      { name: "amount", description: "Amount to add (1-1000000)", type: 4, required: true, min_value: 1, max_value: 1000000 }
+    ]
+  },
+  {
+    name: "messagesub",
+    description: "Subtract from a user's message count",
+    default_member_permissions: "8192",
+    options: [
+      { name: "user", description: "Target user", type: 6, required: true },
+      { name: "amount", description: "Amount to subtract (1-1000000)", type: 4, required: true, min_value: 1, max_value: 1000000 }
+    ]
+  },
+  {
+    name: "messagereset",
+    description: "Reset a user's message count to 0",
+    default_member_permissions: "8192",
+    options: [{ name: "user", description: "Target user", type: 6, required: true }]
+  },
+  {
     name: "setup",
     description: "Setup a panel in a channel",
     default_member_permissions: "8",
@@ -99,11 +128,7 @@ const commands = [
       { name: "target", description: "Target channel (defaults to current)", type: 7, required: false }
     ]
   },
-  { name: "updateprem", description: "Edit premium features list" },
   { name: "updatekeyless", description: "Edit keyless features list" },
-  { name: "updateexecpc", description: "Edit PC executors (live message)" },
-  { name: "updateexecmobile", description: "Edit mobile executors (live message)" },
-  { name: "updateexecutors", description: "Edit all executors (section format)" },
   { name: "updateprices", description: "Edit premium pricing (live message)" },
 ];
 

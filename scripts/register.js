@@ -1,3 +1,8 @@
+// run: DISCORD_APP_ID=xxx DISCORD_BOT_TOKEN=xxx node scripts/register.js
+
+const APP_ID = process.env.DISCORD_APP_ID;
+const TOKEN = process.env.DISCORD_BOT_TOKEN;
+
 const commands = [
   { name: "coinflip", description: "Flip a coin" },
   {
@@ -37,30 +42,6 @@ const commands = [
   },
   { name: "features", description: "View Xenon Hub features" },
   { name: "credits", description: "View bot credits" },
-  { name: "scripts", description: "Open the script selection panel" },
-  { name: "executors", description: "View the executor list" },
-  {
-    name: "update-executor",
-    description: "Update the timestamp for executors",
-    options: [
-      {
-        name: "platform", description: "Platform", type: 3, required: true,
-        choices: [
-          { name: "PC", value: "pc" },
-          { name: "Mobile", value: "mobile" }
-        ]
-      },
-      {
-        name: "type", description: "Executor type", type: 3, required: true,
-        choices: [
-          { name: "Free (PC)", value: "free" },
-          { name: "Paid (PC)", value: "paid" },
-          { name: "Android (Mobile)", value: "android" },
-          { name: "iOS (Mobile)", value: "ios" }
-        ]
-      }
-    ]
-  },
   {
     name: "setup",
     description: "Setup a panel in a channel",
@@ -74,9 +55,7 @@ const commands = [
         required: true,
         choices: [
           { name: "Features", value: "features" },
-          { name: "Credits", value: "credits" },
-          { name: "Price Info", value: "priceinfo" },
-          { name: "Executors", value: "executors" }
+          { name: "Credits", value: "credits" }
         ]
       }
     ]
@@ -88,27 +67,12 @@ const commands = [
       { name: "features", description: "Comma separated list of changes", type: 3, required: true },
       { name: "note", description: "Extra note at the bottom", type: 3, required: false }
     ]
-  },
-  {
-    name: "copy",
-    description: "Copy a message (embed + buttons) to another channel",
-    default_member_permissions: "8",
-    options: [
-      { name: "message_id", description: "Message ID to copy", type: 3, required: true },
-      { name: "source", description: "Source channel (defaults to current)", type: 7, required: false },
-      { name: "target", description: "Target channel (defaults to current)", type: 7, required: false }
-    ]
-  },
-  { name: "updatekeyless", description: "Edit keyless features list" },
-  { name: "updateprices", description: "Edit premium pricing (live message)" },
+  }
 ];
 
-module.exports = async function handler(req, res) {
-  const APP_ID = process.env.DISCORD_APP_ID;
-  const TOKEN = process.env.DISCORD_BOT_TOKEN;
-
+async function register() {
   const url = `https://discord.com/api/v10/applications/${APP_ID}/commands`;
-  const r = await fetch(url, {
+  const res = await fetch(url, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -117,11 +81,12 @@ module.exports = async function handler(req, res) {
     body: JSON.stringify(commands)
   });
 
-  if (r.ok) {
-    const data = await r.json();
-    return res.json({ success: true, registered: data.length });
+  if (res.ok) {
+    console.log(`registered ${commands.length} commands`);
   } else {
-    const err = await r.text();
-    return res.status(500).json({ success: false, error: err });
+    const err = await res.text();
+    console.error("failed:", res.status, err);
   }
-};
+}
+
+register();

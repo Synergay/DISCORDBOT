@@ -6,9 +6,8 @@ const { updateCmd } = require("../commands/update");
 const { copyCmd } = require("../commands/copy");
 const { scriptsCmd } = require("../commands/scripts");
 const { execListCmd, updateExecTimestamp } = require("../commands/execlist");
-const {
-  openKeylessModal, openPriceModal
-} = require("../commands/editfeatures");
+const { viewCmd, addCmd, subCmd, resetCmd } = require("../commands/messages");
+const { openKeylessModal, openPriceModal } = require("../commands/editfeatures");
 const { ephemeral } = require("../utils/respond");
 
 function parseOpts(data) {
@@ -27,7 +26,7 @@ function parseOpts(data) {
   return opts;
 }
 
-async function handleCmd(data, member, token, channelId) {
+async function handleCmd(data, member, token, channelId, guildId) {
   const name = data.name;
   const opts = parseOpts(data);
   opts._channel_id = channelId;
@@ -44,6 +43,10 @@ async function handleCmd(data, member, token, channelId) {
     case "scripts": return scriptsCmd();
     case "executors": return execListCmd();
     case "update-executor": return await updateExecTimestamp(opts);
+    case "messages": return await viewCmd(opts, member, guildId);
+    case "messageadd": return await addCmd(opts, member, guildId);
+    case "messagesub": return await subCmd(opts, member, guildId);
+    case "messagereset": return await resetCmd(opts, member, guildId);
     case "updatekeyless": return await openKeylessModal(member);
     case "updateprices": return await openPriceModal(member);
     default: return ephemeral({ content: "unknown command" });

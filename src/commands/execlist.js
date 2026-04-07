@@ -53,8 +53,6 @@ async function getLastUpdated() {
   return await store.get("execlist:updated") || "24th of March 26";
 }
 
-// --- /executors ---
-
 function execListCmd() {
   return reply({
     content: "Select your platform:",
@@ -68,12 +66,9 @@ function execListCmd() {
   });
 }
 
-// store the panel message after it's sent (called from interactions.js)
 async function storePanel(channelId, messageId) {
   await store.set("execlist:panel", JSON.stringify({ channelId, messageId }));
 }
-
-// --- /update-executor ---
 
 async function updateExecTimestamp(opts) {
   const platform = opts.platform;
@@ -114,8 +109,6 @@ async function updateExecTimestamp(opts) {
     return ephemeral({ content: "\u274C Failed to edit panel message." });
   }
 }
-
-// --- buttons ---
 
 async function handleBtn(id) {
   if (id === "exec_pc_main") {

@@ -1,8 +1,8 @@
 const { InteractionResponseType, InteractionResponseFlags } = require("discord-interactions");
 
-function reply(content, ephemeral = false) {
+function reply(content, ephemeralFlag = false) {
   const data = typeof content === "string" ? { content } : content;
-  if (ephemeral) data.flags = InteractionResponseFlags.EPHEMERAL;
+  if (ephemeralFlag) data.flags = InteractionResponseFlags.EPHEMERAL;
   return { type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE, data };
 }
 
@@ -10,9 +10,9 @@ function ephemeral(content) {
   return reply(content, true);
 }
 
-function deferReply(ephemeral = false) {
+function deferReply(ephemeralFlag = false) {
   const data = {};
-  if (ephemeral) data.flags = InteractionResponseFlags.EPHEMERAL;
+  if (ephemeralFlag) data.flags = InteractionResponseFlags.EPHEMERAL;
   return { type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE, data };
 }
 

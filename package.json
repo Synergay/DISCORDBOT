@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Xenon Hub Discord Bot",
   "main": "api/interactions.js",
-  "scripts": {
-    "register": "node scripts/register.js"
-  },
   "dependencies": {
     "@upstash/redis": "^1.34.3",
     "discord-interactions": "^3.4.0",

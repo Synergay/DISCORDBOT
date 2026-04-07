@@ -1,6 +1,6 @@
 const { reply, ephemeral } = require("../utils/respond");
 const store = require("../utils/store");
-const { parseSections, toSectionText } = require("../utils/sections");
+const { parseSections } = require("../utils/sections");
 
 const DEFAULT_KEYLESS_TEXT = `[\u2694\uFE0F Combat]
 Auto Block
